@@ -50,13 +50,19 @@ $('#ingestJSON').click(function() {
         sort_select_html += "<option>" + item + "</option>";
     });
 
+    // Empty out divSort before filling it up with options again
+    $("#divsort").html("");
     $("#divsort").html('&rarr; Select Sort Key <select id="selsortkey"><option>-select field-</option>' + sort_select_html + '</select>');
 
-    // $("#divdelete").html();
+    // Empty sort_select_html after use as it may be used again
+    // and we don't want duplication.
+    sort_select_html = "";
 
+    // Empty out the product list before filling it up with items
     $("#productList").html("");
-
     $("#productList").prepend("<li class='list-group-item d-flex justify-content-between align-items-center filtered'>"+header_list+"</li>");
+
+    header_list = [];
 
     matrix.forEach(function (json_item){
         console.log("json_item - ");
@@ -79,13 +85,13 @@ $('#ingestJSON').click(function() {
 
         $("#productList").append("<li class='list-group-item d-flex justify-content-between align-items-center'>"+items_list+"</li>");
 
-        header_list = [];
         items_list = [];
     });
 });
 
 $("body").on("change", "#selsortkey", function () {
     var t = $("select#selsortkey").val();
+    console.log(t);
     matrix = sortByKey(matrix, t);
 
     console.log(matrix);
@@ -94,10 +100,13 @@ $("body").on("change", "#selsortkey", function () {
         header_list.push("<span class='font-weight-bold'>"+item+"</span>");
     });
 
+    // The sort is destructive - it sorts the matrix above
+    // and then replaces the front-facing HTML completely
     $("#productList").html("");
-
     $("#productList").prepend("<li class='list-group-item d-flex justify-content-between align-items-center filtered'>"+header_list+"</li>");
 
+    // Empty out the header list completely after use, as it may be used again
+    // and we don't want duplication.
     header_list = [];
 
     matrix.forEach(function (json_item){
